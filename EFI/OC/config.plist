@@ -86,14 +86,6 @@
 				<key>Enabled</key>
 				<true/>
 			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>SSDT-RMNE.aml</string>
-				<key>Path</key>
-				<string>SSDT-RMNE.aml</string>
-				<key>Enabled</key>
-				<true/>
-			</dict>
 		</array>
 		<key>Delete</key>
 		<array>
@@ -117,32 +109,6 @@
 				<data></data>
 				<key>Replace</key>
 				<data>WExJRA==</data>
-				<key>ReplaceMask</key>
-				<data></data>
-				<key>Skip</key>
-				<integer>0</integer>
-				<key>TableLength</key>
-				<integer>0</integer>
-				<key>TableSignature</key>
-				<data>RFNEVA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>change PNLF to XNLF</string>
-				<key>Count</key>
-				<integer>0</integer>
-				<key>Enabled</key>
-				<true/>
-				<key>Find</key>
-				<data>UE5MRg==</data>
-				<key>Limit</key>
-				<integer>0</integer>
-				<key>Mask</key>
-				<data></data>
-				<key>OemTableId</key>
-				<data></data>
-				<key>Replace</key>
-				<data>WE5MRg==</data>
 				<key>ReplaceMask</key>
 				<data></data>
 				<key>Skip</key>
@@ -791,7 +757,7 @@
 			<key>AppleCpuPmCfgLock</key>
 			<false/>
 			<key>AppleXcpmCfgLock</key>
-			<false/>
+			<true/>
 			<key>AppleXcpmExtraMsrs</key>
 			<false/>
 			<key>AppleXcpmForceBoost</key>
@@ -1012,7 +978,7 @@
 			<key>SpoofVendor</key>
 			<true/>
 			<key>SystemProductName</key>
-			<string>MacBookPro14,1</string>
+			<string>MacBookPro15,2</string>
 			<key>SystemSerialNumber</key>
 			<string></string>
 			<key>SystemUUID</key>
