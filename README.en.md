@@ -1,47 +1,60 @@
-# OpenCore for Honor MagicBook 2018 Intel
+# OpenCore for Honor MagicBook 2018 Intel (macOS Big Sur)
 
+**DISCLAIMER:**
+This project is for educational purposes only. Do not use it for commercial purposes. I am not responsible for any damage caused to your device by using this project.
 
+## Hardware Configuration
 
-**DISCLAIMER：**
+| Specification | Details |
+| :--- | :--- |
+| Model | Honor MagicBook 2018 (Intel Version) |
+| Processor | Intel Core i5-8250U (Kaby Lake R) |
+| Graphics | Intel UHD Graphics 620 (iGPU) / NVIDIA MX150 (Disabled) |
+| Memory | 8GB LPDDR3 2133MHz |
+| Storage | SATA SSD (Stock SanDisk) |
+| Audio | Realtek ALC256 |
+| Wi-Fi/BT | Intel Wireless-AC 8265 |
+| Display | 14-inch 1080P (Touchscreen Disabled) |
 
-- The project is still in testing state. Proceed at your own risk, I shall not take responsibility for any damages caused!
+## Current Status
 
-#### Configuration:
+**OS Version**: macOS Big Sur 11.x
+**Bootloader**: OpenCore
 
-| Specifications       | Detail                            |
-| -------------------- | --------------------------------- |
-| Computer model       | Magicbook 2018 Intel 14'' (MX150) |
-| Processor            | Intel Core i5-8250U Processor     |
-| Memory               | Micron LPDDR3 2133MHz 4GB*2       |
-| Hard Disk            | SanDisk SATA SSD SD9SN8W256G1027  |
-| Integrated GPU       | Intel UHD Graphics 620            |
-| Sound Card           | Realtek ALC256                    |
-| Wireless & Bluetooth | Intel Dual-Band WIRELESS-AC 8265  |
-| Touchpad             | ELAN 2203                         |
-| Camera               | Sunplusit hm1091_techfront        |
+### ✅ Working
+- **Graphics**: UHD 620 Hardware Acceleration (H.264/HEVC).
+- **CPU**: Native Power Management (XCPM), SMBIOS `MacBookPro15,2`, Low frequency/Turbo boost working.
+- **Audio**: ALC256 Internal Speakers/Microphone.
+- **Wi-Fi**: Intel 8265 using `AirportItlwm`, supports native Wi-Fi menu.
+- **Bluetooth**: Intel Bluetooth (Toggle/Connect).
+- **Trackpad**: Elan 2203 with multi-touch gestures.
+- **USB**: USB 2.0/3.0/Type-C mapped.
+- **Battery**: Percentage display.
+- **Sleep/Wake**: Lid sleep working.
+- **Backlight**: Brightness keys working (SSDT-PNLF + WhateverGreen).
 
-#### What's Working:
+### ⚠️ Disabled/Known Issues
+- **Touchscreen**: Disabled by default via SSDT (to avoid compatibility issues and accidental touches). To enable, disable `SSDT-TPD0.aml`.
+- **dGPU**: MX150 disabled globally via SSDT to save power.
+- **Fingerprint**: Not supported in macOS.
+- **Headphone Jack**: 3.5mm jack might need replugging or manual switching (ComboJack).
+- **AirDrop**: Requires Broadcom card for full support; Intel card supports limited Handoff features.
 
-- CPU native power management （Low frequency with 1.2 Ghz and about 4 hours battery life ）
-- Intel UHD Graphics 620
-- Sunplusit hm1091_techfront
-- USB/Type-C/HDMI ports
-- Intel Dual-Band WIRELESS-AC 8265（Wifi/Bluetooth）
-- Realtek ALC256 speaker
-- ELAN 2203（MutilTouch )
-- Battery status
-- Backlight control
-- Internal MicroPhone
-- Lid sleep/wake up
+## Installation Instructions
 
-#### What doesn't Work:
+### 1. Generate Serial Numbers (Required)
+The `config.plist` in this project has empty Serial Number, MLB, and UUID. Please use [GenSMBIOS](https://github.com/corpnewt/GenSMBIOS) to generate them before installation:
+- **SystemProductName**: `MacBookPro15,2`
+- Fill the generated Serial, Board Serial (MLB), and SmUUID into `config.plist` -> `PlatformInfo` -> `Generic`.
 
-- Fn function keys
-- 3.5 mm jack headphone
-- Fingerprint sensor
-- Nvidia graphics MX 150
+### 2. Kext Notes
+- **Wi-Fi**: Default configuration uses `AirportItlwm.kext` for macOS Big Sur. If you are installing Catalina or Monterey, please replace it with the corresponding version.
+- **NVMeFix**: It is recommended to add `NVMeFix.kext` to optimize power management for non-Apple SSDs.
 
-#### Credits:
+## Patch Notes
+For detailed ACPI patch modification records, please refer to [Workspace/README-patch.md](Workspace/README-patch.md).
+
+## Credits
 
 - [Acidanthera](https://github.com/acidanthera)：OpenCore documents
 - [OC-little](https://github.com/daliansky/OC-little)：ACPI hotpatch
