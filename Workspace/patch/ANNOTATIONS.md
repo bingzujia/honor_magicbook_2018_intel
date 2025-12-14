@@ -15,6 +15,7 @@
 - SSDT-MCHC.dsl
 - SSDT-PLUG.dsl
 - SSDT-RMNE.dsl
+- SSDT-GPRW.dsl
   - EC0 中新增了一个非常保守的 `_DSM`（function 0 返回 capability buffer），用于提供 EC DSM 能力并且不会覆盖复杂 DSDT 实现。
 ---
 
@@ -42,6 +43,12 @@
 
 - 测试建议
   - 在 macOS 通过 `ioreg` 检查 `PNP0C0D` 是否可见；通过盖子操作观察 `pmset` 的 `Wake reason`。
+
+- 依赖补丁 (config.plist)
+  - `change _LID to XLID`: 将 DSDT 中的 `_LID` 重命名为 `XLID`，以便 SSDT 可以重定义 `_LID` 并调用原始 `XLID`。
+    - Find: `5F 4C 49 44` (_LID)
+    - Replace: `58 4C 49 44` (XLID)
+
 
 ---
 
@@ -214,8 +221,35 @@
 
 - 测试
   - 检查 `ioreg` 或系统报告，确认 I2C1 下的触摸屏设备在 macOS 下不再出现。
-  - 1) 为每个 DSL 生成独立 `.md` 注释文件并把它们放入 `Workspace/patch/docs/`；
-  - 2) 为 `SSDT-PNLF` 和 `SSDT-LID-Assist` 生成更细致的测试步骤与改进案例；
-  - 3) 写一个批量编译脚本 `Workspace/build-patches.ps1` 并把编译结果放到 `EFI/OC/ACPI/` 目录（需要你允许我把生成的 AML 放入 `EFI`）。
 
-请选择下一步（回复 1/2/3 或指定其它任务），我会继续。
+- 依赖补丁 (config.plist)
+  - `OSYS=0x07D0 to OSYS=0x07DF`: 强制将 OSYS 变量设置为 Windows 2015 (0x07DF)，以启用 I2C 控制器的高级特性（通常用于触控板/触摸屏）。
+    - Find: `70 0B D0 07 4F 53 59 53` (Store(0x07D0, OSYS))
+    - Replace: `70 0B DF 07 4F 53 59 53` (Store(0x07DF, OSYS))
+
+
+---
+
+### SSDT-GPRW.dsl
+主要作用：修复盒盖睡眠后无故唤醒（秒醒）问题，拦截特定 GPE 的唤醒信号。
+
+- 问题分析
+  - 电脑在盒盖睡眠后无故唤醒，通常是因为 USB 设备 (XHC) 或其他 PCIe 设备 (如网卡) 发送了唤醒信号。
+  - 在 DSDT 中，USB 控制器 (XHC) 和网卡 (GLAN) 使用 GPE `0x6D`，PCIe 设备 (PXSX) 使用 GPE `0x69`。
+
+- 解决方案
+  - 拦截 `GPRW` 方法，禁止 `0x6D` 和 `0x69` 号 GPE 的唤醒功能。
+  - 需要配合 `config.plist` 中的 `GPRW` -> `XPRW` 重命名补丁使用。
+
+- 注意事项
+  - 该补丁会禁用 USB 唤醒功能（即无法通过点击鼠标或键盘唤醒电脑），需要使用电源键唤醒。
+  - 盒盖/开盖唤醒不受影响（使用 `0x50` 号中断）。
+
+- 测试
+  - 重启电脑，测试盒盖睡眠是否还会无故唤醒。
+
+- 依赖补丁 (config.plist)
+  - `change GPRW to XPRW`: 将 DSDT 中的 `GPRW` 重命名为 `XPRW`，以便 SSDT 可以重定义 `GPRW` 并调用原始 `XPRW`。
+    - Find: `47 50 52 57 02` (GPRW)
+    - Replace: `58 50 52 57 02` (XPRW)
+
